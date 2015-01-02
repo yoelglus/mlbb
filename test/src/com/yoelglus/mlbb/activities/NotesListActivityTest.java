@@ -1,6 +1,6 @@
 package com.yoelglus.mlbb.activities;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ListView;
 import com.yoelglus.mlbb.R;
@@ -12,15 +12,16 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
+import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = "../AndroidManifest.xml")
 public class NotesListActivityTest {
 
-    private Activity notesListActivity;
+    private static final int SELECTED_NOTE_ID = 3;
+
+    private NotesListActivity notesListActivity;
 
     @Before
     public void setUp() throws Exception {
@@ -52,6 +53,23 @@ public class NotesListActivityTest {
     @Test
     public void testNotesListSetsProperChoiceModeInPhone() throws Exception {
         assertEquals(getNotesListFragment().getListView().getChoiceMode(), ListView.CHOICE_MODE_NONE);
+    }
+
+    @Test
+    public void testOnItemSelectedInPhone() throws Exception {
+        notesListActivity.onNoteSelected(SELECTED_NOTE_ID);
+        assertEquals(getNextStartedActivityIntent(), createExpectedIntentWithNoteId(SELECTED_NOTE_ID));
+    }
+
+    private Intent getNextStartedActivityIntent() {
+        return shadowOf(notesListActivity).getNextStartedActivity();
+    }
+
+    private Intent createExpectedIntentWithNoteId(int noteId) {
+        Intent expectedIntent = new Intent();
+        expectedIntent.setClassName(notesListActivity.getPackageName(), NoteDetailsActivity.class.getName());
+        expectedIntent.putExtra(NoteDetailsActivity.ARG_NOTE_ID, noteId);
+        return expectedIntent;
     }
 
     private NotesListFragment getNotesListFragment() {
