@@ -1,4 +1,4 @@
-package com.yoelglus.mlbb.activities;
+package com.yoelglus.mlbb.fragments;
 
 import android.widget.ListView;
 import android.widget.TextView;
