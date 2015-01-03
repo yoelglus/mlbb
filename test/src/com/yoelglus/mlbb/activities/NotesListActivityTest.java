@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.ListView;
 import com.yoelglus.mlbb.R;
+import com.yoelglus.mlbb.fragments.NoteDetailsFragment;
 import com.yoelglus.mlbb.fragments.NotesListFragment;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,18 +48,27 @@ public class NotesListActivityTest {
     @Test
     @Config(qualifiers = "sw600dp")
     public void testNotesListSetsProperChoiceModeInTablet() throws Exception {
-        assertEquals(getNotesListFragment().getListView().getChoiceMode(), ListView.CHOICE_MODE_SINGLE);
+        assertEquals(ListView.CHOICE_MODE_SINGLE, getNotesListFragment().getListView().getChoiceMode());
     }
 
     @Test
     public void testNotesListSetsProperChoiceModeInPhone() throws Exception {
-        assertEquals(getNotesListFragment().getListView().getChoiceMode(), ListView.CHOICE_MODE_NONE);
+        assertEquals(ListView.CHOICE_MODE_NONE, getNotesListFragment().getListView().getChoiceMode());
     }
 
     @Test
-    public void testOnItemSelectedInPhone() throws Exception {
+    public void testOnItemSelectedInPhoneStartsDetailsActivity() throws Exception {
         notesListActivity.onNoteSelected(SELECTED_NOTE_ID);
-        assertEquals(getNextStartedActivityIntent(), createExpectedIntentWithNoteId(SELECTED_NOTE_ID));
+        assertEquals(createExpectedIntentWithNoteId(SELECTED_NOTE_ID), getNextStartedActivityIntent());
+    }
+
+    @Test
+    @Config(qualifiers = "sw600dp")
+    public void testOnItemSelectedInTabletSetDetailsContainer() throws Exception {
+        notesListActivity.onNoteSelected(SELECTED_NOTE_ID);
+        NoteDetailsFragment noteDetailsFragment =
+                (NoteDetailsFragment) notesListActivity.getFragmentManager().findFragmentById(R.id.note_details_container);
+        assertEquals(SELECTED_NOTE_ID, noteDetailsFragment.getArguments().getInt(NoteDetailsFragment.ARG_NOTE_ID));
     }
 
     private Intent getNextStartedActivityIntent() {
@@ -68,7 +78,7 @@ public class NotesListActivityTest {
     private Intent createExpectedIntentWithNoteId(int noteId) {
         Intent expectedIntent = new Intent();
         expectedIntent.setClassName(notesListActivity.getPackageName(), NoteDetailsActivity.class.getName());
-        expectedIntent.putExtra(NoteDetailsActivity.ARG_NOTE_ID, noteId);
+        expectedIntent.putExtra(NoteDetailsFragment.ARG_NOTE_ID, noteId);
         return expectedIntent;
     }
 
