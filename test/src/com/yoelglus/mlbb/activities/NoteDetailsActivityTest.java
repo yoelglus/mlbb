@@ -18,6 +18,11 @@ public class NoteDetailsActivityTest {
 
     private static final int TEST_NOTE_ID = 2;
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testThrowsExceptionWithoutNoteId() throws Exception {
+        Robolectric.buildActivity(NoteDetailsActivity.class).create().get();
+    }
+
     @Test
     public void testTestNoteDetailsFragmentExists() throws Exception {
         assertNotNull(createActivityAndGetNoteDetailsFragment(TEST_NOTE_ID));

@@ -12,6 +12,9 @@ public class NoteDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_details);
 
+        if (!getIntent().hasExtra(NoteDetailsFragment.ARG_NOTE_ID))
+            throw new IllegalArgumentException("Note ID is not defined");
+
         NoteDetailsFragment noteDetailsFragment =
                 NoteDetailsFragment.create(getIntent().getIntExtra(NoteDetailsFragment.ARG_NOTE_ID, -1));
         getFragmentManager().beginTransaction().replace(R.id.note_details_container, noteDetailsFragment).commit();
