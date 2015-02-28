@@ -14,7 +14,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.*;
-//import static org.robolectric.Robolectric.shadowOf;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 public class NotesListActivityTest {
@@ -58,7 +58,7 @@ public class NotesListActivityTest {
     @Test
     public void testOnItemSelectedInPhoneStartsDetailsActivity() throws Exception {
         notesListActivity.onNoteSelected(SELECTED_NOTE_ID);
-//        assertEquals(createExpectedIntentWithNoteId(SELECTED_NOTE_ID), getNextStartedActivityIntent());
+        assertEquals(createExpectedIntentWithNoteId(SELECTED_NOTE_ID), getNextStartedActivityIntent());
     }
 
     @Test
@@ -70,9 +70,9 @@ public class NotesListActivityTest {
         assertEquals(SELECTED_NOTE_ID, noteDetailsFragment.getArguments().getInt(NoteDetailsFragment.ARG_NOTE_ID));
     }
 
-//    private Intent getNextStartedActivityIntent() {
-//        return shadowOf(notesListActivity).getNextStartedActivity();
-//    }
+    private Intent getNextStartedActivityIntent() {
+        return shadowOf(notesListActivity).getNextStartedActivity();
+    }
 
     private Intent createExpectedIntentWithNoteId(int noteId) {
         Intent expectedIntent = new Intent();
