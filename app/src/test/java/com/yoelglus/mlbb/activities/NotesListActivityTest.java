@@ -14,7 +14,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.*;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 public class NotesListActivityTest {
@@ -71,7 +70,7 @@ public class NotesListActivityTest {
     }
 
     private Intent getNextStartedActivityIntent() {
-        return shadowOf(notesListActivity).getNextStartedActivity();
+        return Robolectric.shadowOf(notesListActivity).getNextStartedActivity();
     }
 
     private Intent createExpectedIntentWithNoteId(int noteId) {
