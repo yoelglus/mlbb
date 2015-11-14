@@ -1,16 +1,17 @@
 package com.yoelglus.mlbb.fragments;
 
-import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
 import com.yoelglus.mlbb.dummy.DummyContent;
 
 public class NotesListFragment extends ListFragment {
 
-    public static interface Callbacks {
+    public interface Callbacks {
         void onNoteSelected(int noteId);
     }
 
@@ -26,18 +27,18 @@ public class NotesListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setListAdapter(new ArrayAdapter<DummyContent.DummyNote>(getActivity(),
+        setListAdapter(new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 DummyContent.notes));
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof Callbacks))
-            throw new IllegalStateException(activity.getClass().getName() + " must implement NotesListFragment.Callbacks.");
-        callbacks = (Callbacks)activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(context instanceof Callbacks))
+            throw new IllegalStateException(context.getClass().getName() + " must implement NotesListFragment.Callbacks.");
+        callbacks = (Callbacks)context;
     }
 
     @Override

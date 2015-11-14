@@ -36,8 +36,4 @@ public class NoteDetailsFragment extends Fragment {
         contentView.setText(DummyContent.notesMap.get(noteId).content);
         return rootView;
     }
-
-    public int getNoteId() {
-        return noteId;
-    }
 }

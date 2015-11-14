@@ -7,9 +7,9 @@ import java.util.Map;
 
 public class DummyContent {
 
-    public static List<DummyNote> notes = new LinkedList<DummyNote>();
+    public static List<DummyNote> notes = new LinkedList<>();
 
-    public static Map<Integer, DummyNote> notesMap = new HashMap<Integer, DummyNote>();
+    public static Map<Integer, DummyNote> notesMap = new HashMap<>();
 
     static {
         for (int i=1; i<7; i++)
