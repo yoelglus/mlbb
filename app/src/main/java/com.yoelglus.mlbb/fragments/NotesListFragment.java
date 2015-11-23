@@ -8,12 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.yoelglus.mlbb.dummy.DummyContent;
+import com.yoelglus.mlbb.viewmodels.NotesListViewModel;
 
 public class NotesListFragment extends ListFragment {
-
-    public interface Callbacks {
-        void onNoteSelected(int noteId);
-    }
 
     private static Callbacks dummyCallbacks = new Callbacks() {
         @Override
@@ -23,10 +20,12 @@ public class NotesListFragment extends ListFragment {
     };
 
     private Callbacks callbacks = dummyCallbacks;
+    private NotesListViewModel notesListViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setListAdapter(new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
@@ -51,5 +50,9 @@ public class NotesListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         callbacks.onNoteSelected(DummyContent.notes.get(position).id);
+    }
+
+    public interface Callbacks {
+        void onNoteSelected(int noteId);
     }
 }
