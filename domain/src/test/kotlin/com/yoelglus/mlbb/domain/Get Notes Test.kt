@@ -24,5 +24,19 @@ class `Get Notes Test` {
 
         assertThat(subscriber.onNextEvents[0], `is`(emptyList()))
     }
+
+    @Test
+    fun `should return the list`() {
+        val notesStore = mock<NotesStore>() {
+            on { getNotes() } doReturn Observable.just(listOf(Note("first"), Note("second")))
+        }
+        val subscriber = TestSubscriber<List<Note>>()
+
+        val getNotes = GetNotes(notesStore)
+        getNotes.execute(subscriber)
+
+        assertThat(subscriber.onNextEvents[0], `is`(listOf(Note("first"), Note("second"))))
+
+    }
 }
 
