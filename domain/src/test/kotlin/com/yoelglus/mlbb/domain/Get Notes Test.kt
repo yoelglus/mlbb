@@ -11,6 +11,8 @@ import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.TestScheduler
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.NANOSECONDS
 
 class `Get Notes Test` {
 
@@ -18,19 +20,19 @@ class `Get Notes Test` {
     private lateinit var notesStore: NotesStore
     private val testSubscriber = TestSubscriber<List<Note>>()
     private val ioScheduler = TestScheduler()
+    private val mainScheduler = TestScheduler()
 
     @Before
     fun setUp() {
         notesStore = mock()
-        getNotes = GetNotes(notesStore, ioScheduler)
+        getNotes = GetNotes(notesStore, ioScheduler, mainScheduler)
     }
 
     @Test
     fun `should return empty list of notes`() {
         givenNotesStoreWillReturn(emptyList())
 
-        getNotes.execute(testSubscriber)
-        ioScheduler.triggerActions()
+        executeAndTriggerSchdulers()
 
         testSubscriber.assertReceivedOnNext(listOf(emptyList()))
     }
@@ -39,8 +41,7 @@ class `Get Notes Test` {
     fun `should return the list`() {
         givenNotesStoreWillReturn(listOf(Note("first"), Note("second")))
 
-        getNotes.execute(testSubscriber)
-        ioScheduler.triggerActions()
+        executeAndTriggerSchdulers()
 
         testSubscriber.assertReceivedOnNext(listOf(listOf(Note("first"), Note("second"))))
     }
@@ -50,11 +51,30 @@ class `Get Notes Test` {
         givenNotesStoreWillReturn(listOf(Note("first"), Note("second")))
 
         getNotes.execute(testSubscriber)
+        mainScheduler.triggerActions()
         testSubscriber.assertNoValues()
         ioScheduler.triggerActions()
 
         testSubscriber.assertReceivedOnNext(listOf(listOf(Note("first"), Note("second"))))
+    }
 
+    @Test
+    fun `should subscribe on main scheduler`() {
+        givenNotesStoreWillReturn(listOf(Note("first"), Note("second")))
+
+        getNotes.execute(testSubscriber)
+        testSubscriber.assertNoValues()
+        mainScheduler.triggerActions()
+        ioScheduler.triggerActions()
+
+        testSubscriber.assertReceivedOnNext(listOf(listOf(Note("first"), Note("second"))))
+
+    }
+
+    private fun executeAndTriggerSchdulers() {
+        getNotes.execute(testSubscriber)
+        mainScheduler.triggerActions()
+        ioScheduler.triggerActions()
     }
 
     private fun givenNotesStoreWillReturn(notes: List<Note>) {
