@@ -7,7 +7,7 @@ import rx.Subscriber
 
 class GetNotes(val notesStore: NotesStore, val ioScheduler: Scheduler, val mainScheduler: Scheduler) {
     fun execute(subscriber: Subscriber<List<Note>>) {
-        notesStore.getNotes().observeOn(ioScheduler).subscribeOn(mainScheduler).subscribe(subscriber)
+        notesStore.getNotes().subscribeOn(ioScheduler).observeOn(mainScheduler).subscribe(subscriber)
     }
 
 }

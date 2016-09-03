@@ -47,25 +47,25 @@ class `Get Notes Test` {
     }
 
     @Test
-    fun `should observe on io scheduler`() {
+    fun `should subscribe on io scheduler`() {
         givenNotesStoreWillReturn(listOf(Note("first"), Note("second")))
 
         getNotes.execute(testSubscriber)
-        mainScheduler.triggerActions()
         testSubscriber.assertNoValues()
         ioScheduler.triggerActions()
+        mainScheduler.triggerActions()
 
         testSubscriber.assertReceivedOnNext(listOf(listOf(Note("first"), Note("second"))))
     }
 
     @Test
-    fun `should subscribe on main scheduler`() {
+    fun `should observe on main scheduler`() {
         givenNotesStoreWillReturn(listOf(Note("first"), Note("second")))
 
         getNotes.execute(testSubscriber)
+        ioScheduler.triggerActions()
         testSubscriber.assertNoValues()
         mainScheduler.triggerActions()
-        ioScheduler.triggerActions()
 
         testSubscriber.assertReceivedOnNext(listOf(listOf(Note("first"), Note("second"))))
 
@@ -73,8 +73,8 @@ class `Get Notes Test` {
 
     private fun executeAndTriggerSchdulers() {
         getNotes.execute(testSubscriber)
-        mainScheduler.triggerActions()
         ioScheduler.triggerActions()
+        mainScheduler.triggerActions()
     }
 
     private fun givenNotesStoreWillReturn(notes: List<Note>) {
