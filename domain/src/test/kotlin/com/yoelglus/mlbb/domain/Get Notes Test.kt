@@ -4,15 +4,11 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.yoelglus.mlbb.domain.datastore.NotesStore
 import com.yoelglus.mlbb.entities.Note
-import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.TestScheduler
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeUnit.NANOSECONDS
 
 class `Get Notes Test` {
 
@@ -68,7 +64,16 @@ class `Get Notes Test` {
         mainScheduler.triggerActions()
 
         testSubscriber.assertReceivedOnNext(listOf(listOf(Note("first"), Note("second"))))
+    }
 
+    @Test
+    fun `should unsubscribe from data store`() {
+        givenNotesStoreWillReturn(listOf(Note("first"), Note("second")))
+
+        val subscription = getNotes.execute(testSubscriber)
+        subscription.unsubscribe()
+
+        testSubscriber.assertUnsubscribed()
     }
 
     private fun executeAndTriggerSchdulers() {
